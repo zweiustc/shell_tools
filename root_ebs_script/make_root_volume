@@ -1,0 +1,226 @@
+#!/bin/bash
+
+EVM_CLIENT="/home/bcc/bin/evm-client"
+
+zksvr='10.224.69.42:2181'
+zkpath='/bec/new-sandbox/master'
+timeout=6000000
+
+#global var for function return value
+g_volume_id=0
+g_device_name=''
+
+droot_debug=true
+function debug() {
+    if [ x"$droot_debug" == 'xtrue' ] ; then
+	echo $1
+    fi
+}
+
+LOCK_FILE=/tmp/lock
+
+init_lock () {
+    exec 7<> .lock
+}
+
+lock () {
+    flock -n 7 || {
+        debug "Wait lock to release"
+        flock 7
+    }
+}
+
+unlock () {
+    flock -u 7
+}
+
+function create_volume() {
+    size=$1
+    debug "volume size:$size"
+
+    result=`$EVM_CLIENT create $size --token=aaa --zkpath=$zkpath --zkserver=$zksvr --timeout=$timeout 2>&1`
+
+    if [ $? != 0 ]; then
+        echo 'OOps. EBS volume Create failed'
+        exit -1
+    fi
+
+    g_volume_id=`echo $result | grep CINDER_TEXT | awk -F':' '{print $NF}'`
+    echo "volume_id:$g_volume_id"
+}
+
+function delete_volume() {
+    id=$1
+    debug "volume id:$id"
+
+    result=`$EVM_CLIENT delete $id --token=aaa --zkpath=$zkpath --zkserver=$zksvr --timeout=$timeout 2>&1`
+
+    if [ $? != 0 ]; then
+        echo 'OOps. Root/EBS volume Delete failed'
+        exit -1
+    fi
+
+    debug $result
+}
+
+function mkfs() {
+    device=$1
+    debug "device: $device"
+
+    mkfs.ext4 -q -F -E lazy_itable_init=1 $device || return
+}
+
+function attach() {
+    lock
+
+    iqn_prefix='iqn.droot_volume'
+    volume_id=$1
+    backing_store="${volume_id}:fake_user_id:fake_vol_id"
+    #my_ip=`ifconfig | grep 'inet addr' | grep -v '127.0.0.1' | awk -F' ' '{print $2}' | awk -F':' '{print $2}'`
+    my_ip='127.0.0.1'
+    #my_ip=`hostname -i`
+
+    TID=0
+    target_num=`tgt-admin -s | grep 'Target' | wc -l`
+    let TID="${target_num}+1"
+    debug "current target count: "$TID
+    echo $TID >> /tmp/tid
+    VOLUME_ID=$volume_id
+    target_name=${iqn_prefix}.${VOLUME_ID}
+
+    /home/bcc/tgt/sbin/tgtadm --lld iscsi --op new --mode target --tid ${TID} -T ${target_name} || return
+    /home/bcc/tgt/sbin/tgtadm --lld iscsi --op new --mode logicalunit --tid ${TID} --lun 1 --bstype bec_ebs --backing-store ${backing_store} || return
+    /home/bcc/tgt/sbin/tgtadm --lld iscsi --op bind --mode target --tid ${TID} -I ALL || return
+
+    iscsiadm --mode discoverydb --type sendtargets --portal ${my_ip} --discover > /dev/null || return
+    iscsiadm --mode node --targetname ${target_name} --portal ${my_ip}:3260 --login > /dev/null || return
+
+    # get device name
+    iscsiadm -m session -P 3  > /tmp/iscsi-session
+    device=`grep -A 50 "${target_name}" /tmp/iscsi-session | grep 'Attached scsi disk' | awk '{print $4}'`
+    if [ -s $device ]; then
+        debug "device invalid"
+        return -1
+    fi
+
+    unlock
+
+    g_device_name="/dev/${device}"
+    debug "device : ${g_device_name}"
+}
+
+function mount_volume() {
+    mountpoint=$1
+    device=$2
+
+    mount -t ext4 $device $mountpoint || return
+}
+
+function create() {
+    create_volume $1
+    if [ $? != 0 ]; then
+        debug "create volume failed"
+        exit -1
+    fi
+
+    attach $g_volume_id
+    if [ $? != 0 ]; then
+        debug "attach volume failed, rollback create"
+        delete_volume $g_volume_id
+        exit -1
+    fi
+
+    sleep 3
+
+    mkfs $g_device_name
+    if [ $? != 0 ]; then
+        debug "mkfs failed, rollback create"
+        delete_volume $g_volume_id
+        detach_volume $g_volume_id
+
+        exit -1
+    fi
+
+    mountpoint=$2
+    mkdir -p $mountpoint
+    mount_volume $mountpoint $g_device_name
+}
+
+function migrate() {
+    attach $1
+    if [ $? != 0 ]; then
+        exit -1
+    fi
+
+    sleep 3
+
+    mountpoint=$2
+    mkdir -p $mountpoint
+
+    mount_volume $mountpoint $g_device_nam
+    if [ $? != 0 ]; then
+        exit -1
+    fi
+}
+
+function detach_volume() {
+    iqn_prefix='iqn.droot_volume'
+    my_ip='127.0.0.1'
+    volume_id=$1
+
+    debug "iscsiadm --mode node -T ${iqn_prefix}.${volume_id} --portal ${my_ip}:3260 --logout"
+    iscsiadm --mode node -T ${iqn_prefix}.${volume_id} --portal ${my_ip}:3260 --logout
+}
+
+function delete() {
+    iqn_prefix='iqn.droot_volume'
+    my_ip='127.0.0.1'
+    #my_ip=`hostname -i`
+
+    volume_id=$1
+    mountpoint=$2
+
+    umount $mountpoint
+    detach_volume $volume_id
+
+    delete_volume $volume_id
+}
+
+if [ $# != 3 ] ; then
+    echo "Invalid use"
+    echo "Usage:"
+    echo "    $0 create  size mountpoint"
+    echo "    $0 migrate vid  mountpoint"
+    echo "    $0 delete  vid  mountpoint"
+    exit 1
+fi
+
+action=$1
+
+init_lock
+
+case $action in
+    create)
+        size=$2
+        mountpoint=$3
+        debug "action : create, size : $size, mp : $mountpoint"
+
+	create $size $mountpoint
+	;;
+
+    migrate)
+        volume_id=$2
+        mountpoint=$3
+	migrate $volume_id $mountpoint
+	;;
+
+    delete)
+        volume_id=$2
+        mountpoint=$3
+	delete $volume_id $mountpoint
+	;;
+
+    *)
+	echo 'Invalid action. Allowed action: create migrate delete'
+	;;
+esac
