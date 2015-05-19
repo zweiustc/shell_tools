@@ -1,0 +1,14 @@
+#!/bin/bash
+
+log="/var/log/zabbix/zabbix_sms.log"
+MOBILE_NUMBER=$1 # 手机号码
+MESSAGE_UTF8=$2   # 短信内容
+#realname=${LOGFILE}${name}
+#echo $MOBILE_NUMBER>>"$log"
+#echo $MESSAGE_UTF8>>"$log"
+#eval "curl -X POST -H \"Content-Type: application/json\" -d '{\"desNo\":\"$MOBILE_NUMBER\",\"msg\":\"$MESSAGE_UTF8\", \"ext\":\"0\"}' http://10.161.0.76:8765/smss/open/sendSms &" >>$log
+#echo >>$log
+dt=`date|tr '\n' ' '`
+num=`echo $1 | tr '\n' ' '`
+str=${dt}${num}
+echo $str | tr '\n' ' '>>$log;(curl -s -X POST -H "Content-Type: application/json" -d "{\"desNo\":\"$MOBILE_NUMBER\",\"msg\":\"$MESSAGE_UTF8\", \"ext\":\"1\"}" http://10.161.0.76:8765/smss/open/sendSms)>>$log;echo >>$log
