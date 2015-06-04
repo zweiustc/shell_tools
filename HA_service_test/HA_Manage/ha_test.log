@@ -1,0 +1,135 @@
+
+Tue Jun 2 19:29:40 CST 2015 :  keystone tenant-list
++----------------------------------+----------------+---------+
+|                id                |      name      | enabled |
++----------------------------------+----------------+---------+
+| 66b7653527914f76bcd8855d1facaeff |     admin      |   True  |
+| 8499cc7e4eff4757ae8455e7844db369 | guoquan-tenant |   True  |
+| ddbf9605f0944e85a1ba4add56bd7c0b |    service     |   True  |
+| 5046e3a01c7f4398898e0d5de62c8c1c |   test-proj    |   True  |
++----------------------------------+----------------+---------+
+      
+Tue Jun 2 19:29:43 CST 2015 :  keystone token-get
++-----------+----------------------------------+
+|  Property |              Value               |
++-----------+----------------------------------+
+|  expires  |       2015-06-02T12:29:44Z       |
+|     id    | 777ec15c0e734c819e5aa7556728efe8 |
+| tenant_id | 66b7653527914f76bcd8855d1facaeff |
+|  user_id  | d2a99ecc8f0e4e46bf66d46a64248eb0 |
++-----------+----------------------------------+
+      
+Tue Jun 2 19:29:45 CST 2015 :  nova list
++--------------------------------------+---------------------------+--------+------------+-------------+-----------------------------------------+
+| ID                                   | Name                      | Status | Task State | Power State | Networks                                |
++--------------------------------------+---------------------------+--------+------------+-------------+-----------------------------------------+
+| e1b2c69b-3f73-4977-91ab-932ed3d7f53c | agent1                    | ACTIVE | -          | Running     | vm-network2=192.168.0.18, 10.160.60.99  |
+| 730ded16-490b-4236-ab18-bbf65c38a411 | agent2                    | ACTIVE | -          | Running     | vm-network2=192.168.0.19, 10.160.60.100 |
+| 53873c3d-c0b8-4cca-b76f-f47745aa7406 | agent3                    | ACTIVE | -          | Running     | vm-network2=192.168.0.20, 10.160.60.101 |
+| 4f03831b-610f-47d7-99c1-fcbedf48a1fc | cirros-13                 | ACTIVE | -          | Running     | vm-network1=192.168.1.19                |
+| e9680742-5e77-43af-94b9-689ab4561af7 | cirros-14                 | ACTIVE | -          | Running     | vm-network1=192.168.1.20, 10.160.60.91  |
+| adcb2f15-f973-4f1d-b1db-9dbc166e5d68 | cirros-96                 | ACTIVE | -          | Running     | vm-network1=192.168.1.15                |
+| 208703a6-675d-4a8c-9132-ba8ae749d84f | junhongl-boot-from-volume | ACTIVE | -          | Running     | zwjh-net=192.168.99.5                   |
+| c72111fe-85e6-4a58-8b65-e877ef1808fc | monitor_proxy1            | ACTIVE | -          | Running     | vm-network2=192.168.0.15, 10.160.60.94  |
+| 04fe688b-3bc2-4f20-9087-96a9e03e5578 | monitor_proxy2            | ACTIVE | -          | Running     | vm-network2=192.168.0.17, 10.160.60.95  |
+| 34243c7c-93b5-4f25-8570-ea842abc74ee | monitor_server1           | ACTIVE | -          | Running     | vm-network2=192.168.0.14, 10.160.60.92  |
+| db230d54-07b5-4c49-93fa-9dcc18cd7469 | monitor_server2           | ACTIVE | -          | Running     | vm-network2=192.168.0.13, 10.160.60.93  |
+| 240e835d-3d45-43c3-bf58-0f824b415925 | test                      | ACTIVE | -          | Running     | zwjh-net=192.168.99.7                   |
+| 5612e6db-278e-4c5a-8b15-d6da3720e6c5 | vm-2                      | ACTIVE | -          | Running     | vm-network2=192.168.0.4                 |
+| bd943494-a3e8-45ac-8ea5-dd26b453a1eb | vm2                       | ACTIVE | -          | Running     | vm-network1=192.168.1.22                |
+| 751a9540-7032-4de5-b35a-f1a821a3547e | xxj-test-1                | ACTIVE | -          | Running     | vm-network1=192.168.1.24                |
+| e0694bb7-04a7-4fd7-beeb-f628a6c55a0f | zwjh-vm1                  | ACTIVE | -          | Running     | zwjh-net=192.168.99.6, 10.160.60.96     |
++--------------------------------------+---------------------------+--------+------------+-------------+-----------------------------------------+
+      
+Tue Jun 2 19:29:48 CST 2015 :  glance image-list
++--------------------------------------+----------------------------------+-------------+------------------+------------+--------+
+| ID                                   | Name                             | Disk Format | Container Format | Size       | Status |
++--------------------------------------+----------------------------------+-------------+------------------+------------+--------+
+| 29b948f4-9e02-4064-b8ac-28b25d3c00b7 | centos6u5-x86_64-20150530V2      | qcow2       | bare             | 1805320192 | active |
+| 2b6e4a73-cf66-49f0-b4ed-b0113e3a6e8f | centos7_x86-64-noswap-20150530V3 | qcow2       | bare             | 4525129728 | active |
+| 31f8012c-7623-4b51-96e2-29efb020dd2f | centos7_x86-64-noswap-20150530V4 | qcow2       | bare             | 4525129728 | active |
+| d83347cc-bf36-44a0-8cce-ba38bb33eccf | snp1-of-vm1                      |             |                  |            | active |
+| 8eb61157-bbe4-4d6a-b037-809cc27db05f | snp2-of-vm1                      |             |                  |            | active |
+| 3f7ae8e1-7e15-4c9f-a28a-a6b1bd0e3c71 | snp2-of-vm1                      |             |                  |            | active |
+| e38c9db6-5b94-46fa-b3cd-49d7cf891aab | snp2rewr-of-vm1                  |             |                  |            | active |
+| bd6644c8-451c-42a5-83f5-679f5db2844f | test-img                         | raw         | bare             | 13287936   | active |
++--------------------------------------+----------------------------------+-------------+------------------+------------+--------+
+      
+Tue Jun 2 19:29:51 CST 2015 :  neutron net-list
++--------------------------------------+----------------------------------------------------+-------------------------------------------------------+
+| id                                   | name                                               | subnets                                               |
++--------------------------------------+----------------------------------------------------+-------------------------------------------------------+
+| 4e500921-25bb-4685-914a-b3ea9b0ff7fb | vm-network1                                        | 4d55405f-24c4-4e9d-a8a7-5cb20914808c 192.168.1.0/24   |
+| 9f07ae46-13e9-46b6-8e67-89b05c061a8a | zwjh-net                                           | 15761107-585b-4377-b1d8-d0bd7689040f 192.168.99.0/24  |
+| 4d547032-264a-4742-bd97-59c27a526e52 | vm-network2                                        | 133fcdb7-f5b9-4b02-a22f-a8a26fc75562 192.168.0.0/24   |
+| b29f27cd-63be-412b-bcec-17a82769f457 | external                                           | 2a2fec6c-64f7-4b85-8096-c50104c5a251 10.160.60.0/24   |
+| e378041a-f9b5-4597-9685-b60527c69378 | HA network tenant 66b7653527914f76bcd8855d1facaeff | 431f09f7-34d4-4378-8f09-fe039f91433e 169.254.192.0/18 |
++--------------------------------------+----------------------------------------------------+-------------------------------------------------------+
+      
+Tue Jun 2 19:29:53 CST 2015 :  cinder list
++--------------------------------------+----------------+-----------------------------------------+------+-------------+----------+--------------------------------------+
+|                  ID                  |     Status     |                   Name                  | Size | Volume Type | Bootable |             Attached to              |
++--------------------------------------+----------------+-----------------------------------------+------+-------------+----------+--------------------------------------+
+| 0470e8c4-9a5c-4695-9fe9-c2f357f65c29 |     in-use     |                  test1                  |  10  |     None    |   true   | 240e835d-3d45-43c3-bf58-0f824b415925 |
+| 09df8078-23bc-46b8-91d5-e43a703de13a |   available    |              jh-test-volume             |  1   |     None    |  false   |                                      |
+| 3c132d6d-5088-4244-ab9d-0bcd24eb7c27 | error_deleting |                   None                  |  1   |     None    |  false   |                                      |
+| 64155ed8-5086-4cca-a052-913cf5d19593 |     in-use     |        volume-from-jh-snapshot-2        |  1   |     None    |  false   | 208703a6-675d-4a8c-9132-ba8ae749d84f |
+| 6f7fad3c-aaec-4387-a292-02b8dae8c05c |   available    |                 testsfds                |  20  |     None    |   true   |                                      |
+| 734d925e-f7e8-43a9-8239-498832bacd15 |    deleting    |                   None                  |  1   |     None    |  false   |                                      |
+| a606f30c-f674-41a1-99b6-0d5457eaf038 | error_deleting |                   None                  |  2   |     None    |  false   |                                      |
+| b2e0b04f-e5f5-44e7-b9a3-6600ae500fee |     in-use     | centos7_x86-64-noswap-20150530V3_volume |  20  |     None    |   true   | 208703a6-675d-4a8c-9132-ba8ae749d84f |
+| bd1cd9bb-e660-4232-adc0-013d50ce3bf2 |     in-use     |               zwjh-volume               |  10  |     None    |   true   | e0694bb7-04a7-4fd7-beeb-f628a6c55a0f |
++--------------------------------------+----------------+-----------------------------------------+------+-------------+----------+--------------------------------------+
+      
+Tue Jun 2 19:29:56 CST 2015 :  nova get-vnc-console bd943494-a3e8-45ac-8ea5-dd26b453a1eb novnc
++-------+-----------------------------------------------------------------------------------+
+| Type  | Url                                                                               |
++-------+-----------------------------------------------------------------------------------+
+| novnc | http://10.160.60.42:6080/vnc_auto.html?token=723266b5-6b60-4e1e-8fa0-e0049283564b |
++-------+-----------------------------------------------------------------------------------+
+      
+Tue Jun 2 19:29:59 CST 2015 :  cinder create --image-id 31f8012c-7623-4b51-96e2-29efb020dd2f --name zhangweivolume1 20
++---------------------------------------+--------------------------------------+
+|                Property               |                Value                 |
++---------------------------------------+--------------------------------------+
+|              attachments              |                  []                  |
+|           availability_zone           |                 nova                 |
+|                bootable               |                false                 |
+|          consistencygroup_id          |                 None                 |
+|               created_at              |      2015-06-02T11:30:00.000000      |
+|              description              |                 None                 |
+|               encrypted               |                False                 |
+|                   id                  | 1651e22e-7ab4-4682-a1f2-7340ee2524b2 |
+|                metadata               |                  {}                  |
+|              multiattach              |                False                 |
+|                  name                 |           zhangweivolume1            |
+|         os-vol-host-attr:host         |                 None                 |
+|     os-vol-mig-status-attr:migstat    |                 None                 |
+|     os-vol-mig-status-attr:name_id    |                 None                 |
+|      os-vol-tenant-attr:tenant_id     |   66b7653527914f76bcd8855d1facaeff   |
+|   os-volume-replication:driver_data   |                 None                 |
+| os-volume-replication:extended_status |                 None                 |
+|           replication_status          |               disabled               |
+|                  size                 |                  20                  |
+|              snapshot_id              |                 None                 |
+|              source_volid             |                 None                 |
+|                 status                |               creating               |
+|                user_id                |   d2a99ecc8f0e4e46bf66d46a64248eb0   |
+|              volume_type              |                 None                 |
++---------------------------------------+--------------------------------------+
+      
+Tue Jun 2 19:30:06 CST 2015 :  cinder list
++--------------------------------------+----------------+-----------------------------------------+------+-------------+----------+--------------------------------------+
+|                  ID                  |     Status     |                   Name                  | Size | Volume Type | Bootable |             Attached to              |
++--------------------------------------+----------------+-----------------------------------------+------+-------------+----------+--------------------------------------+
+| 0470e8c4-9a5c-4695-9fe9-c2f357f65c29 |     in-use     |                  test1                  |  10  |     None    |   true   | 240e835d-3d45-43c3-bf58-0f824b415925 |
+| 09df8078-23bc-46b8-91d5-e43a703de13a |   available    |              jh-test-volume             |  1   |     None    |  false   |                                      |
+| 1651e22e-7ab4-4682-a1f2-7340ee2524b2 |  downloading   |             zhangweivolume1             |  20  |     None    |  false   |                                      |
+| 3c132d6d-5088-4244-ab9d-0bcd24eb7c27 | error_deleting |                   None                  |  1   |     None    |  false   |                                      |
+| 64155ed8-5086-4cca-a052-913cf5d19593 |     in-use     |        volume-from-jh-snapshot-2        |  1   |     None    |  false   | 208703a6-675d-4a8c-9132-ba8ae749d84f |
+| 6f7fad3c-aaec-4387-a292-02b8dae8c05c |   available    |                 testsfds                |  20  |     None    |   true   |                                      |
+| 734d925e-f7e8-43a9-8239-498832bacd15 |    deleting    |                   None                  |  1   |     None    |  false   |                                      |
+| a606f30c-f674-41a1-99b6-0d5457eaf038 | error_deleting |                   None                  |  2   |     None    |  false   |                                      |
+| b2e0b04f-e5f5-44e7-b9a3-6600ae500fee |     in-use     | centos7_x86-64-noswap-20150530V3_volume |  20  |     None    |   true   | 208703a6-675d-4a8c-9132-ba8ae749d84f |
+| bd1cd9bb-e660-4232-adc0-013d50ce3bf2 |     in-use     |               zwjh-volume               |  10  |     None    |   true   | e0694bb7-04a7-4fd7-beeb-f628a6c55a0f |
++--------------------------------------+----------------+-----------------------------------------+------+-------------+----------+--------------------------------------+
