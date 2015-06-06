@@ -18,4 +18,6 @@ setsebool allow_ftpd_full_access on
 iptables -I INPUT -p tcp --dport 80 -j ACCEPT
 iptables -I INPUT -p tcp --dport 21 -j ACCEPT
 modprobe ip_conntrack_ftp
+#we may need to add configuration below in httpd.conf for centos7
+#ServerName localhost
 
