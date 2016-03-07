@@ -21,3 +21,7 @@ modprobe ip_conntrack_ftp
 #we may need to add configuration below in httpd.conf for centos7
 #ServerName localhost
 
+#Once the directory can not be displayed for authority, we should use
+# "# chcon -t httpd_sys_content_t directory_name" to grant
+# and can use "ls -laZ directory_name" to check
+
